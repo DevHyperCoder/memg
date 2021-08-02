@@ -22,7 +22,9 @@ use std::fmt::Display;
 pub const BOARD_SIZE: usize = 3;
 pub const LIVES: usize = 5;
 pub const DURATION: u32 = 6000;
+pub const TESTING: bool = true;
 
+#[derive(Clone)]
 pub struct Game {
     pub lives: usize,
     pub board: Vec<char>,
@@ -44,12 +46,20 @@ impl Game {
         }
     }
 
-    pub fn check_value(self, position: (usize, usize), value: char) -> bool {
+    pub fn check_value(&self, position: (usize, usize), value: char) -> bool {
         self.get_value(position) == value
     }
 
-    pub fn get_value(self, position: (usize, usize)) -> char {
+    pub fn get_value(&self, position: (usize, usize)) -> char {
         self.board[(position.0 - 1) * BOARD_SIZE + (position.1 - 1)]
+    }
+
+    pub fn decrease_lives(&mut self) -> Option<()> {
+        if self.lives == 1 {
+            return None;
+        }
+        self.lives -= 1;
+        Some(())
     }
 }
 
@@ -89,6 +99,7 @@ fn get_board(s: usize) -> Vec<char> {
     stats
 }
 
+#[derive(Clone)]
 pub enum GameStatus {
     InProgress,
     Lost,

@@ -16,9 +16,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use std::time::Duration;
+use std::{io::stdin, time::Duration};
 
-use memg::{Game, BOARD_SIZE, DURATION};
+use memg::{Game, BOARD_SIZE, DURATION, TESTING};
 use rand::{prelude::SliceRandom, thread_rng};
 
 fn main() {
@@ -26,17 +26,21 @@ fn main() {
 
     println!("memg - Memory Game");
 
-    let game = Game::new();
+    let mut game = Game::new();
 
     println!("{}", game);
 
     println!("You have {} seconds to read the board", DURATION / 1000);
 
-    std::thread::sleep(Duration::from_millis(DURATION.into()));
+    // Check lib.rs#TESTING
+    // Set to False for actual gameplay
+    if !TESTING {
+        std::thread::sleep(Duration::from_millis(DURATION.into()));
 
-    clear_screen();
+        clear_screen();
+    }
 
-    let correct = 0;
+    let mut correct = 0;
 
     let mut coordinates = get_coordinate_array();
 
@@ -45,7 +49,25 @@ fn main() {
     for coord in coordinates {
         println!("Value for {:?} ?", coord);
 
-        //correct+=1;
+        let mut user_input = String::new();
+        stdin().read_line(&mut user_input).unwrap();
+        user_input = user_input.trim_end().to_string();
+        user_input = user_input.to_uppercase();
+
+        let g = &mut game;
+
+        if g.check_value(
+            coord,
+            user_input.chars().next().unwrap().to_ascii_uppercase(),
+        ) {
+            correct += 1;
+            continue;
+        }
+
+        match g.decrease_lives() {
+            None => break,
+            Some(_) => {}
+        }
     }
     if correct == BOARD_SIZE * BOARD_SIZE {
         println!("You won the game!");
