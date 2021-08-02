@@ -21,6 +21,7 @@ use std::fmt::Display;
 
 const BOARD_SIZE: usize = 3;
 const LIVES: usize = 5;
+pub const DURATION: u32 = 6000;
 
 pub struct Game {
     pub lives: usize,

@@ -16,12 +16,27 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use memg::Game;
+use std::time::Duration;
+
+use memg::{Game, DURATION};
 
 fn main() {
+    clear_screen();
+
     println!("memg - Memory Game");
 
     let game = Game::new();
 
-    println!("{}", game)
+    println!("{}", game);
+
+    println!("You have {} seconds to read the board", DURATION / 1000);
+
+    std::thread::sleep(Duration::from_millis(DURATION.into()));
+
+    clear_screen();
+    println!("Bye");
+}
+
+fn clear_screen() {
+    print!("\x1B[2J\x1B[1;1H");
 }
