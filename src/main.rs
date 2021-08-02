@@ -16,6 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+use memg::Game;
+
 fn main() {
     println!("memg - Memory Game");
+
+    let game = Game::new();
+
+    println!("{}", game)
 }
