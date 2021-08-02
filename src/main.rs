@@ -40,8 +40,6 @@ fn main() {
         clear_screen();
     }
 
-    let mut correct = 0;
-
     let mut coordinates = get_coordinate_array();
 
     coordinates.shuffle(&mut thread_rng());
@@ -60,7 +58,7 @@ fn main() {
             coord,
             user_input.chars().next().unwrap().to_ascii_uppercase(),
         ) {
-            correct += 1;
+            g.increment_correct();
             continue;
         }
 
@@ -69,7 +67,8 @@ fn main() {
             Some(_) => {}
         }
     }
-    if correct == BOARD_SIZE * BOARD_SIZE {
+
+    if game.correct == BOARD_SIZE * BOARD_SIZE {
         println!("You won the game!");
         return;
     }

@@ -29,6 +29,7 @@ pub struct Game {
     pub lives: usize,
     pub board: Vec<char>,
     pub status: GameStatus,
+    pub correct: usize,
 }
 
 impl Default for Game {
@@ -43,6 +44,7 @@ impl Game {
             lives: LIVES,
             status: GameStatus::InProgress,
             board: get_board(BOARD_SIZE),
+            correct: 0,
         }
     }
 
@@ -60,6 +62,10 @@ impl Game {
         }
         self.lives -= 1;
         Some(())
+    }
+
+    pub fn increment_correct(&mut self) {
+        self.correct += 1
     }
 }
 
