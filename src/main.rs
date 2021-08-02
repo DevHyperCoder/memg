@@ -42,8 +42,8 @@ fn main() {
 
     coordinates.shuffle(&mut thread_rng());
 
-    for i in 0..BOARD_SIZE * BOARD_SIZE {
-        println!("Value for {:?} ?", coordinates[i]);
+    for coord in coordinates {
+        println!("Value for {:?} ?", coord);
 
         //correct+=1;
     }
