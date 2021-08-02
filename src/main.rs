@@ -18,7 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use std::time::Duration;
 
-use memg::{Game, DURATION};
+use memg::{Game, BOARD_SIZE, DURATION};
+use rand::{prelude::SliceRandom, thread_rng};
 
 fn main() {
     clear_screen();
@@ -34,9 +35,41 @@ fn main() {
     std::thread::sleep(Duration::from_millis(DURATION.into()));
 
     clear_screen();
+
+    let correct = 0;
+
+    let mut coordinates = get_coordinate_array();
+
+    coordinates.shuffle(&mut thread_rng());
+
+    for i in 0..BOARD_SIZE * BOARD_SIZE {
+        println!("Value for {:?} ?", coordinates[i]);
+
+        //correct+=1;
+    }
+    if correct == BOARD_SIZE * BOARD_SIZE {
+        println!("You won the game!");
+        return;
+    }
+
     println!("Bye");
 }
 
 fn clear_screen() {
     print!("\x1B[2J\x1B[1;1H");
+}
+
+fn get_coordinate_array() -> Vec<(usize, usize)> {
+    let mut coords = vec![];
+
+    let mut row = 0;
+
+    while row < BOARD_SIZE {
+        for col in 0..BOARD_SIZE {
+            coords.push((row + 1, col + 1))
+        }
+        row += 1;
+    }
+
+    coords
 }

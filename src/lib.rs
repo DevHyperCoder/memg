@@ -19,8 +19,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 use rand::{prelude::SliceRandom, thread_rng};
 use std::fmt::Display;
 
-const BOARD_SIZE: usize = 3;
-const LIVES: usize = 5;
+pub const BOARD_SIZE: usize = 3;
+pub const LIVES: usize = 5;
 pub const DURATION: u32 = 6000;
 
 pub struct Game {
@@ -42,6 +42,14 @@ impl Game {
             status: GameStatus::InProgress,
             board: get_board(BOARD_SIZE),
         }
+    }
+
+    pub fn check_value(self, position: (usize, usize), value: char) -> bool {
+        self.get_value(position) == value
+    }
+
+    pub fn get_value(self, position: (usize, usize)) -> char {
+        self.board[(position.0 - 1) * BOARD_SIZE + (position.1 - 1)]
     }
 }
 
