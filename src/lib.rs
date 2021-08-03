@@ -31,7 +31,7 @@ pub struct Game {
     pub status: GameStatus,
     pub correct: usize,
     pub coordinates: Vec<(usize, usize)>,
-    currentIndex: usize,
+    current_index: usize,
 }
 
 impl Default for Game {
@@ -48,7 +48,7 @@ impl Game {
             board: get_board(BOARD_SIZE),
             correct: 0,
             coordinates: Game::get_shuffled_coordinate_array(),
-            currentIndex: 0,
+            current_index: 0,
         }
     }
 
@@ -98,7 +98,7 @@ impl Game {
             return "guess";
         }
 
-        return "guesses";
+        "guesses"
     }
 
     pub fn check_value(&self, position: (usize, usize), value: char) -> bool {
@@ -110,40 +110,36 @@ impl Game {
     }
 
     pub fn get_coord(&self) -> (usize, usize) {
-        self.coordinates[self.currentIndex]
+        self.coordinates[self.current_index]
     }
 
     pub fn is_in_progress(&self) -> bool {
         match self.status {
-            GameStatus::InProgress => {
-                return true;
-            }
-            _ => {
-                return false;
-            }
+            GameStatus::InProgress => true,
+            _ => false,
         }
     }
 
     pub fn increment_correct(&mut self) {
         self.correct += 1;
-        self.currentIndex += 1;
+        self.current_index += 1;
 
         self.calculate_game_status()
     }
 
     pub fn decrease_lives(&mut self) {
-        self.currentIndex += 1;
+        self.current_index += 1;
         self.lives -= 1;
 
         self.calculate_game_status()
     }
 
     fn calculate_game_status(&mut self) {
-        self.status = if self.lives <= 0 {
+        self.status = if self.lives == 0 {
             GameStatus::Lost
         } else if self.correct == BOARD_SIZE * BOARD_SIZE {
             GameStatus::Won
-        } else if self.currentIndex == BOARD_SIZE * BOARD_SIZE {
+        } else if self.current_index == BOARD_SIZE * BOARD_SIZE {
             GameStatus::Lost
         } else {
             GameStatus::InProgress
