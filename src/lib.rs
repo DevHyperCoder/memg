@@ -183,10 +183,13 @@ pub enum GameStatus {
 }
 
 #[derive(StructOpt)]
+/// A interactive and fun to use memory game written in rust
 pub struct Args {
-    #[structopt(short,long)]
+    /// Removes timer.
+    #[structopt(short,long="test")]
     pub testing:bool,
 
     #[structopt(short,long,default_value="3")]
+    /// Board size to play on. Specify the number of rows/columns.
     pub board_size:usize
 }
