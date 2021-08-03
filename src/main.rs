@@ -17,25 +17,24 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 use std::{io::stdin, time::Duration};
-
-use memg::{Game, DURATION, TESTING};
+use memg::{Args, DURATION, Game};
+use structopt::StructOpt;
 
 fn main() {
+    let args = Args::from_args();
     clear_screen();
 
     println!("memg - Memory Game");
 
-    let mut game = Game::new();
+    let mut game = Game::new(args.board_size);
 
     println!("{}", game);
 
-    println!("You have {} seconds to read the board", DURATION / 1000);
-
     // Check lib.rs#TESTING
     // Set to False for actual gameplay
-    if !TESTING {
+    if !args.testing {
+        println!("You have {} seconds to read the board", DURATION / 1000);
         std::thread::sleep(Duration::from_millis(DURATION.into()));
-
         clear_screen();
     }
 

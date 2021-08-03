@@ -18,11 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use rand::{prelude::SliceRandom, thread_rng};
 use std::fmt::Display;
+use structopt::StructOpt;
 
-pub const BOARD_SIZE: usize = 3;
 pub const LIVES: usize = 5;
 pub const DURATION: u32 = 6000;
-pub const TESTING: bool = true;
 
 #[derive(Clone)]
 pub struct Game {
@@ -32,41 +31,37 @@ pub struct Game {
     pub correct: usize,
     pub coordinates: Vec<(usize, usize)>,
     current_index: usize,
-}
-
-impl Default for Game {
-    fn default() -> Self {
-        Self::new()
-    }
+    board_size:usize
 }
 
 impl Game {
-    pub fn new() -> Self {
+    pub fn new(board_size:usize) -> Self {
         Game {
             lives: LIVES,
             status: GameStatus::InProgress,
-            board: get_board(BOARD_SIZE),
+            board: get_board(board_size),
             correct: 0,
-            coordinates: Game::get_shuffled_coordinate_array(),
+            coordinates: Game::get_shuffled_coordinate_array(board_size),
             current_index: 0,
+            board_size,
         }
     }
 
-    fn get_shuffled_coordinate_array() -> Vec<(usize, usize)> {
-        let mut coordinates = Game::get_coordinate_array();
+    fn get_shuffled_coordinate_array(board_size:usize) -> Vec<(usize, usize)> {
+        let mut coordinates = Game::get_coordinate_array(board_size);
 
         coordinates.shuffle(&mut thread_rng());
 
         coordinates
     }
 
-    fn get_coordinate_array() -> Vec<(usize, usize)> {
+    fn get_coordinate_array(board_size:usize) -> Vec<(usize, usize)> {
         let mut coords = vec![];
 
         let mut row = 0;
 
-        while row < BOARD_SIZE {
-            for col in 0..BOARD_SIZE {
+        while row < board_size {
+            for col in 0..board_size {
                 coords.push((row + 1, col + 1))
             }
             row += 1;
@@ -106,7 +101,7 @@ impl Game {
     }
 
     pub fn get_value(&self, position: (usize, usize)) -> char {
-        self.board[(position.0 - 1) * BOARD_SIZE + (position.1 - 1)]
+        self.board[(position.0 - 1) * self.board_size + (position.1 - 1)]
     }
 
     pub fn get_coord(&self) -> (usize, usize) {
@@ -114,10 +109,7 @@ impl Game {
     }
 
     pub fn is_in_progress(&self) -> bool {
-        match self.status {
-            GameStatus::InProgress => true,
-            _ => false,
-        }
+        matches!(self.status,GameStatus::InProgress)
     }
 
     pub fn increment_correct(&mut self) {
@@ -137,9 +129,9 @@ impl Game {
     fn calculate_game_status(&mut self) {
         self.status = if self.lives == 0 {
             GameStatus::Lost
-        } else if self.correct == BOARD_SIZE * BOARD_SIZE {
+        } else if self.correct == self.board_size * self.board_size {
             GameStatus::Won
-        } else if self.current_index == BOARD_SIZE * BOARD_SIZE {
+        } else if self.current_index == self.board_size * self.board_size {
             GameStatus::Lost
         } else {
             GameStatus::InProgress
@@ -154,9 +146,9 @@ impl Display for Game {
         }
 
         let mut row = 0;
-        while row < BOARD_SIZE {
-            for col in 0..BOARD_SIZE {
-                if let Err(e) = write!(f, " {} ", self.board[row * BOARD_SIZE + col]) {
+        while row < self.board_size {
+            for col in 0..self.board_size {
+                if let Err(e) = write!(f, " {} ", self.board[row * self.board_size + col]) {
                     return Err(e);
                 }
             }
@@ -188,4 +180,13 @@ pub enum GameStatus {
     InProgress,
     Lost,
     Won,
+}
+
+#[derive(StructOpt)]
+pub struct Args {
+    #[structopt(short,long)]
+    pub testing:bool,
+
+    #[structopt(short,long,default_value="3")]
+    pub board_size:usize
 }
