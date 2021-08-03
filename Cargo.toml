@@ -1,6 +1,6 @@
 [package]
 name = "memg"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["DevHyperCoder <arduinoleo88@gmail.com>"]
 edition = "2018"
 
