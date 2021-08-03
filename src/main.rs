@@ -18,8 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 use std::{io::stdin, time::Duration};
 
-use memg::{Game, BOARD_SIZE, DURATION, TESTING};
-use rand::{prelude::SliceRandom, thread_rng};
+use memg::{Game, DURATION, TESTING};
 
 fn main() {
     clear_screen();
@@ -40,11 +39,14 @@ fn main() {
         clear_screen();
     }
 
-    let mut coordinates = get_coordinate_array();
+    loop {
+        let g = &mut game;
 
-    coordinates.shuffle(&mut thread_rng());
+        if !g.is_in_progress() {
+            break;
+        }
 
-    for coord in coordinates {
+        let coord = g.get_coord();
         println!("Value for {:?} ?", coord);
 
         let mut user_input = String::new();
@@ -52,25 +54,15 @@ fn main() {
         user_input = user_input.trim_end().to_string();
         user_input = user_input.to_uppercase();
 
-        let g = &mut game;
-
         if g.check_value(
             coord,
             user_input.chars().next().unwrap().to_ascii_uppercase(),
         ) {
             g.increment_correct();
-            continue;
+        } else {
+            g.decrease_lives();
         }
-
-        match g.decrease_lives() {
-            None => break,
-            Some(_) => {}
-        }
-    }
-
-    if game.correct == BOARD_SIZE * BOARD_SIZE {
-        println!("You won the game!");
-        return;
+        println!("{}", g.get_status())
     }
 
     println!("Bye");
@@ -78,19 +70,4 @@ fn main() {
 
 fn clear_screen() {
     print!("\x1B[2J\x1B[1;1H");
-}
-
-fn get_coordinate_array() -> Vec<(usize, usize)> {
-    let mut coords = vec![];
-
-    let mut row = 0;
-
-    while row < BOARD_SIZE {
-        for col in 0..BOARD_SIZE {
-            coords.push((row + 1, col + 1))
-        }
-        row += 1;
-    }
-
-    coords
 }
