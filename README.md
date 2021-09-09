@@ -6,7 +6,7 @@
 
 - Make sure you have rust installed. Use this [official installation guide](https://www.rust-lang.org/learn/get-started)
 - Clone the repo: `git clone https://github.com/devhypercoder/memg.git`
-- Build: `cargo bnild --release`. Compiled binary would be found in `target/release/memg` You may copy this to a directory in `$PATH`
+- Build: `cargo build --release`. Compiled binary would be found in `target/release/memg` You may copy this to a directory in `$PATH`
 
 If you wish to directly run the program, `cargo run -- <flags / options>` should do the trick
 
